@@ -22,7 +22,7 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # score([1,1,1,5,1]) => 1150 points
 # score([2,3,4,6,2]) => 0 points
-# score([3,4,5,3,3]) => 350 points
+# score([3,4,5,3,3]) => 350 points 
 # score([1,5,1,2,4]) => 250 points
 #
 # More scoring examples are given in the tests below:
@@ -30,7 +30,37 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+  sum = 0
+  if dice.size < 1
+    return sum
+  end
+  rolls_by_num = Hash.new(0)
+  dice.each { |num| rolls_by_num[num] += 1 }	
+
+  (2..6).each { |item| if has_more_than_two_rolls(rolls_by_num[item]) then sum += item * 100; end }
+
+  sum += calc_score_for_ones_by_num_of_ones(rolls_by_num[1]) 
+  sum += calc_score_for_fives_by_num_of_fives(rolls_by_num[5])
+  
+  return sum
+end
+
+def calc_score_for_ones_by_num_of_ones(ones_to_be_scored)
+  sum = 0
+  if ones_to_be_scored > 2
+    sum += 1000
+    ones_to_be_scored -= 3
+  end
+  sum + ones_to_be_scored * 100
+end  
+
+def calc_score_for_fives_by_num_of_fives(num_of_fives)
+  fives_to_be_scored = num_of_fives > 2 ? num_of_fives - 3 : num_of_fives
+  fives_to_be_scored * 50
+end
+
+def has_more_than_two_rolls(num_of_rolls)
+  num_of_rolls != nil and num_of_rolls > 2
 end
 
 class AboutScoringProject < Neo::Koan
